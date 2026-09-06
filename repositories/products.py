@@ -4,7 +4,7 @@ import sqlite3
 from typing import Optional
 
 from database.connection import get_connection
-from schemas.products import ProductCreate, ProductRead
+from schemas.products import ProductCreate, ProductRead, ProductUpdate
 
 
 def create_product(product: ProductCreate) -> ProductRead:
@@ -63,6 +63,37 @@ def list_products() -> list[ProductRead]:
         ).fetchall()
 
     return [ProductRead(**dict(row)) for row in rows]
+
+
+def update_product(sku: str, product_update: ProductUpdate) -> Optional[ProductRead]:
+    values_by_column = {}
+
+    if product_update.name is not None:
+        values_by_column["name"] = product_update.name
+
+    if product_update.reorder_level is not None:
+        values_by_column["reorder_level"] = product_update.reorder_level
+
+    if not values_by_column:
+        return get_product_by_sku(sku)
+
+    columns = ", ".join(
+        f"{column} = ?"
+        for column in values_by_column
+    )
+    values = list(values_by_column.values())
+
+    with get_connection() as connection:
+        connection.execute(
+            f"""
+            UPDATE products
+            SET {columns}
+            WHERE sku = ?
+            """,
+            values + [sku],
+        )
+
+    return get_product_by_sku(sku)
 
 
 def is_unique_sku_error(error: sqlite3.IntegrityError) -> bool:
