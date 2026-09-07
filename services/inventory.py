@@ -60,3 +60,7 @@ def get_low_stock_inventory() -> list[InventoryItem]:
         for item in inventory
         if item.current_stock <= item.reorder_level
     ]
+
+
+def get_all_stock_movements() -> list[StockMovementRead]:
+    return stock_movement_repository.get_all_stock_movements()
