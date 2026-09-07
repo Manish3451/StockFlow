@@ -82,14 +82,13 @@ def get_inventory() -> list[InventoryItem]:
 
     return [InventoryItem(**dict(row)) for row in rows]
 
-
-def get_all_stock_movements() -> list[StockMovementRead]:
+def all_stock_movements() -> list[StockMovementRead]:
     with get_connection() as connection:
         rows = connection.execute(
             """
             SELECT id, product_id, quantity_change, reason, created_at
             FROM stock_movements
-            ORDER BY id
+            ORDER BY created_at DESC
             """
         ).fetchall()
 
