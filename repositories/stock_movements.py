@@ -82,7 +82,7 @@ def get_inventory() -> list[InventoryItem]:
 
     return [InventoryItem(**dict(row)) for row in rows]
 
-def all_stock_movements() -> list[StockMovementRead]:
+def get_all_stock_movements() -> list[StockMovementRead]:
     with get_connection() as connection:
         rows = connection.execute(
             """
