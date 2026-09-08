@@ -8,6 +8,7 @@ from services.inventory import (
     InsufficientStockError,
     ProductNotFoundError,
     create_stock_movement,
+    get_all_stock_movements,
     get_inventory,
     get_low_stock_inventory,
 )
@@ -49,3 +50,8 @@ def get_inventory_route() -> list[InventoryItem]:
 @router.get("/inventory/low-stock", response_model=list[InventoryItem])
 def get_low_stock_inventory_route() -> list[InventoryItem]:
     return get_low_stock_inventory()
+
+
+@router.get("/stock-movements", response_model=list[StockMovementRead])
+def get_all_stock_movements_route() -> list[StockMovementRead]:
+    return get_all_stock_movements()
